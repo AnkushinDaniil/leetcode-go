@@ -12,21 +12,21 @@ func TestSortArrayByParity(t *testing.T) {
 		nums []int
 		want int
 	}{
-		// {
-		// 	name: "Example 1",
-		// 	nums: []int{1, 1, 4, 2, 1, 3},
-		// 	want: 3,
-		// },
-		// {
-		// 	name: "Example 2",
-		// 	nums: []int{5, 1, 2, 3, 4},
-		// 	want: 5,
-		// },
-		// {
-		// 	name: "Example 3",
-		// 	nums: []int{1, 2, 3, 4, 5},
-		// 	want: 0,
-		// },
+		{
+			name: "Example 1",
+			nums: []int{1, 1, 4, 2, 1, 3},
+			want: 3,
+		},
+		{
+			name: "Example 2",
+			nums: []int{5, 1, 2, 3, 4},
+			want: 5,
+		},
+		{
+			name: "Example 3",
+			nums: []int{1, 2, 3, 4, 5},
+			want: 0,
+		},
 		{
 			name: "Example 4",
 			nums: []int{7, 4, 5, 6, 4, 2, 1, 4, 6, 5, 4, 8, 3, 1, 8, 2, 7, 6, 3, 2},
