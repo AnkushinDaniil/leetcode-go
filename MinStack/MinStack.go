@@ -26,7 +26,11 @@ func (s *MinStack) Push(val int) {
 		return
 	}
 
-	value.minimum = min(val, s.stack[len(s.stack)-1].minimum)
+	if val < s.stack[len(s.stack)-1].minimum {
+		value.minimum = val
+	} else {
+		value.minimum = s.stack[len(s.stack)-1].minimum
+	}
 	s.stack = append(s.stack, value)
 }
 
