@@ -1,9 +1,6 @@
 package binarySearch
 
-import "runtime"
-
 func search(nums []int, target int) int {
-	runtime.GC()
 	l, r := 0, len(nums)-1
 	for l <= r {
 		i := (l + r) / 2
