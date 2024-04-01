@@ -8,50 +8,44 @@ func minWindow(s string, t string) string {
 		return ""
 	}
 
-	sTable := [26 * 2]uint16{}
-	tTable := [26 * 2]uint16{}
+	table := make(map[uint8]int, 0)
 
 	for i := range t {
-		tTable[charToInt(t[i])]++
+		table[t[i]]++
 	}
 
-	l := 0
-	r := 0
+	counter := len(table)
 
-	for r = range s[:tLen] {
-		sTable[charToInt(s[r])]++
-	}
-
-	res := ""
 	resLen := sLen + 1
+	resL := 0
 
-	for r < sLen {
-		isIncluded := true
-		for j := 0; j < 26*2 && isIncluded; j++ {
-			isIncluded = sTable[j] >= tTable[j]
-		}
-		if isIncluded {
-			if temp := r - l + 1; temp < resLen {
-				resLen = temp
-				res = s[l : r+1]
+	indexes := make([]int, 0)
+	index := 0
+
+	for r := range s {
+		if _, ok := table[s[r]]; ok {
+			indexes = append(indexes, r)
+			if counter > 0 {
+				if table[s[r]]--; table[s[r]] == 0 {
+					counter--
+				}
 			}
-			sTable[charToInt(s[l])]--
-			l++
-		} else if r+1 < sLen {
-			r++
-			sTable[charToInt(s[r])]++
-		} else {
-			break
+			for ; counter == 0; index++ {
+				l := indexes[index]
+				if length := r - l + 1; length < resLen {
+					resLen = length
+					resL = l
+				}
+				if table[s[l]]++; table[s[l]] == 1 {
+					counter++
+				}
+			}
 		}
 	}
 
-	return res
-}
-
-func charToInt(ch uint8) uint8 {
-	if ch >= 'a' {
-		return ch - 'a' + 26
-	} else {
-		return ch - 'A'
+	if resLen == sLen+1 {
+		return ""
 	}
+
+	return s[resL : resL+resLen]
 }

@@ -37,6 +37,12 @@ func Test(t *testing.T) {
 			t:      "cae",
 			output: "cwae",
 		},
+		{
+			name:   "Example 5",
+			s:      "a",
+			t:      "b",
+			output: "",
+		},
 	}
 
 	for _, testCase := range testTable {
