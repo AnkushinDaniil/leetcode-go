@@ -1,4 +1,4 @@
-package CheckIfNAndItsDoubleExist
+package checkIfNAndItsDoubleExist
 
 func CheckIfExist(arr []int) bool {
 	checked := make(map[int]bool)

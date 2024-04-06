@@ -1,4 +1,4 @@
-package CheckIfNAndItsDoubleExist
+package checkIfNAndItsDoubleExist
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 )
 
 func TestCheckIfExist(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		arr  []int
 		want bool
 	}{

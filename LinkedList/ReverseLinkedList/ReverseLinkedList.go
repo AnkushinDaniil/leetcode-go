@@ -1,9 +1,8 @@
 package reverseLinkedList
 
-type ListNode struct {
-	Val  int
-	Next *ListNode
-}
+import "github.com/AnkushinDaniil/leetcode-go/linkedList"
+
+type ListNode = linkedList.ListNode
 
 func reverseList(head *ListNode) *ListNode {
 	var prev *ListNode = nil

@@ -1,9 +1,8 @@
 package mergeTwoSortedLists
 
-type ListNode struct {
-	Val  int
-	Next *ListNode
-}
+import "github.com/AnkushinDaniil/leetcode-go/linkedList"
+
+type ListNode = linkedList.ListNode
 
 func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 	res := &ListNode{}

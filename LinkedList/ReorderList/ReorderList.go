@@ -1,9 +1,8 @@
 package reorderList
 
-type ListNode struct {
-	Val  int
-	Next *ListNode
-}
+import "github.com/AnkushinDaniil/leetcode-go/linkedList"
+
+type ListNode = linkedList.ListNode
 
 func reorderList(head *ListNode) {
 	slow := head

@@ -1,11 +1,8 @@
 package reorderList
 
-type ListNode struct {
-	Val  int
-	Next *ListNode
-}
+import "github.com/AnkushinDaniil/leetcode-go/linkedList"
 
-func removeNthFromEnd(head *ListNode, n int) *ListNode {
+func removeNthFromEnd(head *linkedList.ListNode, n int) *linkedList.ListNode {
 	cur, prev := head, head
 
 	for ; n > 0; n-- {
