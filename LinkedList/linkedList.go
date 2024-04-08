@@ -1,5 +1,10 @@
 package linkedList
 
+import (
+	"strconv"
+	"strings"
+)
+
 type ListNode struct {
 	Val  int
 	Next *ListNode
@@ -22,4 +27,14 @@ func CreateListFromArray(arr []int) *ListNode {
 	}
 
 	return nil
+}
+
+func (l *ListNode) String() string {
+	cur := l
+	var res strings.Builder
+	for cur != nil {
+		res.WriteString(strconv.Itoa(cur.Val) + " ")
+		cur = cur.Next
+	}
+	return res.String()
 }
