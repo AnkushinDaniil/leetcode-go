@@ -14,23 +14,25 @@ type LRUCache struct {
 func Constructor(capacity int) LRUCache {
 	res := LRUCache{
 		Cap:   capacity,
-		Cache: make(map[int]*Node),
+		Cache: make(map[int]*Node, capacity),
 		Left:  &Node{},
 		Right: &Node{},
 	}
-	res.Left.Next, res.Right.Prev = res.Right, res.Left
+	res.Left.Next = res.Right
+	res.Right.Prev = res.Left
 	return res
 }
 
 func (c *LRUCache) Remove(node *Node) {
-	node.Prev.Next, node.Next.Prev = node.Next, node.Prev
+	node.Prev.Next = node.Next
+	node.Next.Prev = node.Prev
 }
 
 func (c *LRUCache) Insert(node *Node) {
-	prev, next := c.Right.Prev, c.Right
-	next.Prev = node
-	prev.Next = next.Prev
-	node.Next, node.Prev = next, prev
+	node.Prev = c.Right.Prev
+	node.Next = c.Right
+	c.Right.Prev.Next = node
+	c.Right.Prev = node
 }
 
 func (c *LRUCache) Get(key int) int {
@@ -44,28 +46,18 @@ func (c *LRUCache) Get(key int) int {
 }
 
 func (c *LRUCache) Put(key int, value int) {
-	if _, ok := c.Cache[key]; ok {
-		c.Remove(c.Cache[key])
-	}
-
-	c.Cache[key] = &Node{
+	node := &Node{
 		Key: key,
 		Val: value,
 	}
 
-	c.Insert(c.Cache[key])
-
-	if len(c.Cache) > c.Cap {
-		lru := c.Left.Next
-
-		c.Remove(lru)
-		delete(c.Cache, lru.Key)
+	if _, ok := c.Cache[key]; ok {
+		c.Remove(c.Cache[key])
+	} else if len(c.Cache) == c.Cap {
+		delete(c.Cache, c.Left.Next.Key)
+		c.Remove(c.Left.Next)
 	}
-}
 
-/**
- * Your LRUCache object will be instantiated and called as such:
- * obj := Constructor(capacity);
- * param_1 := obj.Get(key);
- * obj.Put(key,value);
- */
+	c.Insert(node)
+	c.Cache[key] = node
+}

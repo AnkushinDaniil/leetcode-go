@@ -21,6 +21,14 @@ func Test(t *testing.T) {
 			input:  [][]int{{2}, {1, 1}, {2, 2}, {1}, {3, 3}, {2}, {4, 4}, {1}, {3}, {4}},
 			output: [][]int{{}, {}, {}, {1}, {}, {-1}, {}, {-1}, {3}, {4}},
 		},
+		{
+			name: "Example 2",
+			functions: []string{
+				"LRUCache", "get", "put", "get", "put", "put", "get", "get",
+			},
+			input:  [][]int{{2}, {2}, {2, 6}, {1}, {1, 5}, {1, 2}, {1}, {2}},
+			output: [][]int{{}, {-1}, {}, {-1}, {}, {}, {2}, {6}},
+		},
 	}
 
 	for _, testCase := range testTable {
