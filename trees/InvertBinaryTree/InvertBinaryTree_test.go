@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var CreateTreeFromArray func([]int) *TreeNode = trees.CreateTreeFromArray
+var CreateTreeFromArray func([]interface{}) *TreeNode = trees.CreateTreeFromArray
 
 func Test(t *testing.T) {
 	testTable := []struct {
@@ -17,13 +17,13 @@ func Test(t *testing.T) {
 	}{
 		{
 			name:   "Example 1",
-			root:   CreateTreeFromArray([]int{4, 2, 7, 1, 3, 6, 9}),
-			output: CreateTreeFromArray([]int{4, 7, 2, 9, 6, 3, 1}),
+			root:   CreateTreeFromArray([]interface{}{4, 2, 7, 1, 3, 6, 9}),
+			output: CreateTreeFromArray([]interface{}{4, 7, 2, 9, 6, 3, 1}),
 		},
 		{
 			name:   "Example 2",
-			root:   CreateTreeFromArray([]int{2, 1, 3}),
-			output: CreateTreeFromArray([]int{2, 3, 1}),
+			root:   CreateTreeFromArray([]interface{}{2, 1, 3}),
+			output: CreateTreeFromArray([]interface{}{2, 3, 1}),
 		},
 	}
 
