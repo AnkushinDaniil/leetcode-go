@@ -7,6 +7,9 @@ type TreeNode struct {
 }
 
 func CreateTreeFromArray(arr []interface{}) *TreeNode {
+	if len(arr) == 0 {
+		return nil
+	}
 	res := make([]TreeNode, len(arr))
 	for i := 0; i < len(arr); i++ {
 		if val, ok := arr[i].(int); ok {
