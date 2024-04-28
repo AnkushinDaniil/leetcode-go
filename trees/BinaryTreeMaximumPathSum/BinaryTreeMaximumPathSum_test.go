@@ -54,3 +54,10 @@ func Benchmark(b *testing.B) {
 		maxPathSum(root)
 	}
 }
+
+func BenchmarkMax(b *testing.B) {
+	root := CreateTreeFromArray([]interface{}{-10, 9, 20, nil, nil, 15, 7})
+	for i := 0; i < b.N; i++ {
+		maxPathSum_(root)
+	}
+}

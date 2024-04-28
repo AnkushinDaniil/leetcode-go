@@ -34,3 +34,25 @@ func maxPathSum(root *TreeNode) int {
 
 	return res
 }
+
+func maxPathSum_(root *TreeNode) int {
+	res := root.Val
+
+	var rec func(*TreeNode) int
+	rec = func(tn *TreeNode) int {
+		if tn == nil {
+			return 0
+		}
+
+		l := max(0, rec(tn.Left))
+		r := max(0, rec(tn.Right))
+
+		res = max(res, l+r+tn.Val)
+
+		return max(l, r) + tn.Val
+	}
+
+	rec(root)
+
+	return res
+}
