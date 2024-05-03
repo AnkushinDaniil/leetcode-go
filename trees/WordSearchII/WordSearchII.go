@@ -5,80 +5,127 @@ package wordSearchII
 // 	links [26]*TrieNode
 // }
 
-type Trie struct {
-	links [26]*Trie
-	end   bool
+type TrieNode struct {
+	children [26]*TrieNode
+	isEnd    bool
 }
 
-func Constructor() Trie {
-	return Trie{}
+func Constructor() TrieNode {
+	return TrieNode{}
 }
 
-var i, j int
-
-func (this *Trie) Insert(word string) {
-	cur := this
-	_ = word[len(word)-1]
-	for i = 0; i < len(word); i++ {
+func (tn *TrieNode) Insert(word string) {
+	cur := tn
+	for i := 0; i < len(word); i++ {
 		index := word[i] - 'a'
-		if cur.links[index] == nil {
-			cur.links[index] = &Trie{}
+		if cur.children[index] == nil {
+			cur.children[index] = &TrieNode{}
 		}
-		cur = cur.links[index]
+		cur = cur.children[index]
 	}
-	cur.end = true
+	cur.isEnd = true
+}
+
+func (tn *TrieNode) IsEmpty() bool {
+	for i := 0; i < 26; i++ {
+		if tn.children[i] != nil {
+			return false
+		}
+	}
+	return true
+}
+
+func (tn *TrieNode) Delete(word string) bool {
+	if len(word) == 0 {
+		tn.isEnd = false
+		return tn.IsEmpty()
+	}
+	if tn.children[word[0]-'a'].Delete(word[1:]) {
+		tn.children[word[0]-'a'] = nil
+		return tn.IsEmpty()
+	}
+	return false
 }
 
 func findWords(board [][]byte, words []string) []string {
+	rows, cols := len(board), len(board[0])
 	trie := Constructor()
-	for j = len(words) - 1; j >= 0; j-- {
-		trie.Insert(words[j])
-	}
+	res := make([]string, 0, 64)
 
-	var dfs func(int, int, *Trie)
-	table := make(map[string]struct{}, 64)
-	checked := make(map[[2]int]struct{}, len(board)*len(board[0]))
+	var dfs func(int, int, *TrieNode)
 	stack := make([]byte, len(board)*len(board[0]))
 	stackLen := 0
 
-	dfs = func(c, r int, t *Trie) {
-		if _, ok := checked[[2]int{c, r}]; ok || c < 0 || c >= len(board[0]) || r < 0 ||
-			r >= len(board) || t == nil {
+	dfs = func(c, r int, t *TrieNode) {
+		if c < 0 || c >= cols || r < 0 ||
+			r >= rows || board[r][c] == 0 {
 			return
 		}
-		t = t.links[board[r][c]-'a']
+		t = t.children[board[r][c]-'a']
+
 		if t == nil {
 			return
 		}
-		stack[stackLen] = board[r][c]
+		ch := board[r][c]
+		board[r][c] = 0
+
+		stack[stackLen] = ch
 		stackLen++
-		if t.end {
-			table[string(stack[:stackLen])] = struct{}{}
+
+		if t.isEnd {
+			res = append(res, string(stack[:stackLen]))
+			t.isEnd = false
+			trie.Delete(string(stack[:stackLen]))
 		}
-		checked[[2]int{c, r}] = struct{}{}
+
 		dfs(c+1, r, t)
 		dfs(c, r+1, t)
 		dfs(c-1, r, t)
 		dfs(c, r-1, t)
-		delete(checked, [2]int{c, r})
+		board[r][c] = ch
 		stackLen--
 	}
-	for y := len(board) - 1; y >= 0; y-- {
-		for x := len(board[0]) - 1; x >= 0; x-- {
-			dfs(x, y, &trie)
+
+	table := make(map[[2]byte]struct{}, rows*(cols-1)+(rows-1)*cols)
+
+	for r := 0; r < rows; r++ {
+		for c := 0; c < cols-1; c++ {
+			table[[2]byte{board[r][c], board[r][c+1]}] = struct{}{}
 		}
 	}
-	res := make([]string, 0, len(table))
+	for r := 0; r < rows-1; r++ {
+		for c := 0; c < cols; c++ {
+			table[[2]byte{board[r][c], board[r+1][c]}] = struct{}{}
+		}
+	}
 
-	for key := range table {
-		res = append(res, key)
+	var (
+		ok1, ok2 bool
+		i, j     int
+	)
+	for i = 0; i < len(words); i++ {
+	WORD:
+		for j = 0; j < len(words[i])-1; j++ {
+			_, ok1 = table[[2]byte{words[i][j], words[i][j+1]}]
+			_, ok2 = table[[2]byte{words[i][j+1], words[i][j]}]
+			if !ok1 && !ok2 {
+				break WORD
+			}
+		}
+		trie.Insert(words[i])
+	}
+
+	for y := 0; y < rows; y++ {
+		for x := 0; x < cols; x++ {
+			dfs(x, y, &trie)
+		}
 	}
 
 	return res
 }
 
-// func (this *Trie) Search(word string) bool {
-// 	cur := this
+// func (tn *Trie) Search(word string) bool {
+// 	cur := tn
 // 	_ = word[len(word)-1]
 // 	for i = 0; i < len(word); i++ {
 // 		index = word[i] - 'a'
@@ -90,8 +137,8 @@ func findWords(board [][]byte, words []string) []string {
 // 	return cur.end
 // }
 
-// func (this *Trie) StartsWith(prefix string) bool {
-// 	cur := this
+// func (tn *Trie) StartsWith(prefix string) bool {
+// 	cur := tn
 // 	_ = prefix[len(prefix)-1]
 // 	for i = 0; i < len(prefix); i++ {
 // 		index = prefix[i] - 'a'

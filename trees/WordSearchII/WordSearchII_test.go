@@ -22,7 +22,7 @@ func Test(t *testing.T) {
 				{'i', 'f', 'l', 'v'},
 			},
 			words:  []string{"oath", "pea", "eat", "rain"},
-			output: []string{"eat", "oath"},
+			output: []string{"oath", "eat"},
 		},
 		{
 			name: "Example 2",
@@ -33,10 +33,34 @@ func Test(t *testing.T) {
 			words:  []string{"abcb"},
 			output: []string{},
 		},
+		{
+			name: "Example 2",
+			board: [][]byte{
+				{'o', 'a', 'b', 'n'},
+				{'o', 't', 'a', 'e'},
+				{'a', 'h', 'k', 'r'},
+				{'a', 'f', 'l', 'v'},
+			},
+			words:  []string{"oa", "oaa"},
+			output: []string{"oa", "oaa"},
+		},
 	}
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			assert.Equal(t, testCase.output, findWords(testCase.board, testCase.words))
 		})
+	}
+}
+
+func Benchmark(b *testing.B) {
+	board := [][]byte{
+		{'o', 'a', 'a', 'n'},
+		{'e', 't', 'a', 'e'},
+		{'i', 'h', 'k', 'r'},
+		{'i', 'f', 'l', 'v'},
+	}
+	words := []string{"oath", "pea", "eat", "rain"}
+	for i := 0; i < b.N; i++ {
+		findWords(board, words)
 	}
 }
