@@ -5,15 +5,14 @@ import "slices"
 func combinationSum2(candidates []int, target int) [][]int {
 	res := make([][]int, 0)
 	subset := make([]int, 0)
-	sum := 0
 	slices.Sort(candidates)
 
 	var dfs func(int)
 	dfs = func(i int) {
-		if sum > target {
+		if target < 0 {
 			return
 		}
-		if sum == target {
+		if 0 == target {
 			res = append(res, make([]int, len(subset)))
 			copy(res[len(res)-1], subset)
 			return
@@ -23,10 +22,10 @@ func combinationSum2(candidates []int, target int) [][]int {
 				continue
 			}
 			subset = append(subset, candidates[j])
-			sum += candidates[j]
+			target -= candidates[j]
 			dfs(j + 1)
 			subset = subset[:len(subset)-1]
-			sum -= candidates[j]
+			target += candidates[j]
 		}
 	}
 
