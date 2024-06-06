@@ -12,6 +12,7 @@ func numDecodings(s string) int {
 		if !(s[i-2] == '1' || s[i-2] == '2' && s[i-1] < '7') {
 			a = 0
 		}
+
 		if s[i-1] != '0' {
 			a += b
 		}
