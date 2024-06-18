@@ -11,18 +11,18 @@ var testTable = []struct {
 	nums   []int
 	output bool
 }{
-	// {
-	// 	nums:   []int{2, 3, 1, 1, 4},
-	// 	output: true,
-	// },
-	// {
-	// 	nums:   []int{3, 2, 1, 0, 4},
-	// 	output: false,
-	// },
-	// {
-	// 	nums:   []int{0, 1},
-	// 	output: false,
-	// },
+	{
+		nums:   []int{2, 3, 1, 1, 4},
+		output: true,
+	},
+	{
+		nums:   []int{3, 2, 1, 0, 4},
+		output: false,
+	},
+	{
+		nums:   []int{0, 1},
+		output: false,
+	},
 	{
 		nums:   []int{0},
 		output: true,
