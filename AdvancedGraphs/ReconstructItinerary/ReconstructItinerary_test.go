@@ -531,8 +531,37 @@ func Test(t *testing.T) {
 			assert.Equal(
 				t,
 				testTable[i].output,
-				findItinerary(testTable[i].tickets),
+				findItineraryPointers(testTable[i].tickets),
 			)
 		})
 	}
 }
+
+func Benchmark_findItinerary(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		findItinerary(testTable[4].tickets)
+	}
+}
+
+func Benchmark_findItineraryPointers(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		findItineraryPointers(testTable[4].tickets)
+	}
+}
+
+func Benchmark_findItineraryString(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		findItineraryString(testTable[4].tickets)
+	}
+}
+
+func Benchmark_findItineraryLCT(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		findItineraryLCT(testTable[4].tickets)
+	}
+}
+
+// Benchmark_findItinerary-10                101001             11190 ns/op       5824 B/op          16 allocs/op
+// Benchmark_findItineraryPointers-10        125648              9433 ns/op       1544 B/op          21 allocs/op
+// Benchmark_findItineraryString-10           82164             14435 ns/op       6528 B/op         187 allocs/op
+// Benchmark_findItineraryLCT-10             104736             10996 ns/op       7952 B/op          31 allocs/op
