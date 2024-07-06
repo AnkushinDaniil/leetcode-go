@@ -25,3 +25,15 @@ func sortedArrayToBST(nums []int) *TreeNode {
 	}
 	return dfs(0, len(nums)-1)
 }
+
+func sortedArrayToBSTfast(nums []int) *TreeNode {
+	if len(nums) == 0 {
+		return nil
+	}
+	m := len(nums) / 2
+	return &TreeNode{
+		Val:   nums[m],
+		Left:  sortedArrayToBST(nums[0:m]),
+		Right: sortedArrayToBST(nums[m+1:]),
+	}
+}
