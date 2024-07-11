@@ -1,85 +1,120 @@
 package kClosestPointstoOrigin
 
-type MaxHeap []int
+type point struct {
+	coords         []int
+	distanceSquare int
+}
+
+func sumOfSquares(x, y int) int {
+	return x*x + y*y
+}
+
+func NewPoint(p []int) *point {
+	return &point{
+		coords:         p,
+		distanceSquare: sumOfSquares(p[0], p[1]),
+	}
+}
+
+type heapPoint []*point
+
+func (h heapPoint) Compare(i, j int) bool {
+	return h[i].distanceSquare >= h[j].distanceSquare
+}
+
+func (h heapPoint) Swap(i, j int) {
+	h[i], h[j] = h[j], h[i]
+}
+
+func NewHeap(capacity int) *heapPoint {
+	heap := make(heapPoint, 0, capacity)
+	return &heap
+}
 
 func parent(i int) int {
 	return (i - 1) / 2
 }
 
 func left(i int) int {
-	return 2*i + 1
+	return i*2 + 1
 }
 
 func right(i int) int {
-	return 2*i + 2
+	return i*2 + 2
 }
 
-func NewMaxHeap(cap int) MaxHeap {
-	res := make([]int, 0, cap)
-	return MaxHeap(res)
-}
-
-var (
-	res   [][]int
-	point []int = make([]int, 2)
-)
-
-func (h *MaxHeap) Swap(i, j int) {
-	(*h)[i], (*h)[j] = (*h)[j], (*h)[i]
-	res[i], res[j] = res[j], res[i]
-}
-
-func (h *MaxHeap) Insert(k int) {
-	i := len((*h))
-	(*h) = append((*h), k)
-	res = append(res, point)
-
-	for i != 0 && (*h)[parent(i)] < (*h)[i] {
-		(*h).Swap(i, parent(i))
-		i = parent(i)
+func (h *heapPoint) heapifyUp(i int) {
+	for i > 0 {
+		p := parent(i)
+		if h.Compare(i, p) {
+			h.Swap(i, p)
+		} else {
+			return
+		}
+		i = p
 	}
 }
 
-func (h *MaxHeap) Heapify(i int) {
-	l := left(i)
-	r := right(i)
-	biggest := i
-	if l < len((*h)) && (*h)[l] > (*h)[i] {
-		biggest = l
-	}
-	if r < len((*h)) && (*h)[r] > (*h)[biggest] {
-		biggest = r
-	}
-	if biggest != i {
-		h.Swap(i, biggest)
-		h.Heapify(biggest)
+func (h *heapPoint) heapifyDown(i int) {
+	for {
+		highest := i
+
+		l := left(i)
+		if l < len(*h) && h.Compare(l, i) {
+			highest = l
+		}
+
+		r := right(i)
+		if r < len(*h) && h.Compare(r, highest) {
+			highest = r
+		}
+
+		if i == highest {
+			return
+		}
+		h.Swap(i, highest)
+		i = highest
 	}
 }
 
-func (h *MaxHeap) ExtractMax() {
-	(*h)[0] = (*h)[len((*h))-1]
-	res[0] = res[len(res)-1]
-	(*h) = (*h)[:len((*h))-1]
-	res = res[:len(res)-1]
-	(*h).Heapify(0)
+func (h *heapPoint) Insert(p *point) {
+	*h = append(*h, p)
+	h.heapifyUp(len(*h) - 1)
+	// fmt.Println("Insert: ", h.isHeap(0))
 }
 
-func (h *MaxHeap) GetMax() int {
-	return (*h)[0]
+func (h *heapPoint) Pop() *point {
+	res := (*h)[0]
+	h.Swap(0, len(*h)-1)
+	*h = (*h)[:len(*h)-1]
+	h.heapifyDown(0)
+	// fmt.Println("Pop: ", h.isHeap(0))
+	return res
 }
+
+// func (h *heapPoint) isHeap(i int) bool {
+// 	if i >= len(*h) {
+// 		return true
+// 	}
+// 	return h.Compare(parent(i), i) && h.isHeap(left(i)) && h.isHeap(right(i))
+// }
 
 func kClosest(points [][]int, k int) [][]int {
-	res = make([][]int, 0, len(points))
-	heap := NewMaxHeap(len(points))
+	if k >= len(points) {
+		return points
+	}
+	heap := NewHeap(k + 1)
 	i := 0
 	for ; i < k; i++ {
-		point = points[i]
-		heap.Insert(point[0]*point[0] + point[1]*point[1])
+		heap.Insert(NewPoint(points[i]))
 	}
 	for ; i < len(points); i++ {
-		point = points[i]
-		heap.Insert(point[0]*point[0] + point[1]*point[1])
-		heap.ExtractMax()
+		heap.Insert(NewPoint(points[i]))
+		heap.Pop()
 	}
-	return res
+	i = 0
+	for ; len(*heap) > 0; i++ {
+		points[i] = heap.Pop().coords
+	}
+	return points[:k]
 }
