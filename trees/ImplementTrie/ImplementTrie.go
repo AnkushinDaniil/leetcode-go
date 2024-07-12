@@ -1,59 +1,79 @@
 package implementTrie
 
-// type TrieNode struct {
-// 	val   struct{}
-// 	links [26]*TrieNode
-// }
-
 type Trie struct {
-	links [26]*Trie
-	end   bool
+	isEnd    bool
+	shared   string
+	children [26]*Trie
 }
 
 func Constructor() Trie {
 	return Trie{}
 }
 
-var (
-	index uint8
-	i     int
-)
-
-func (this *Trie) Insert(word string) {
-	cur := this
-	_ = word[len(word)-1]
-	for i = 0; i < len(word); i++ {
-		index = word[i] - 'a'
-		if cur.links[index] == nil {
-			cur.links[index] = &Trie{}
-		}
-		cur = cur.links[index]
+func (t *Trie) Insert(word string) {
+	i := 0
+	for ; i < len(word) && i < len(t.shared) && word[i] == t.shared[i]; i++ {
 	}
-	cur.end = true
+	if i == len(word) && i == len(t.shared) {
+		t.isEnd = true
+	}
+
+	if i < len(t.shared) {
+		idx := t.shared[i] - 'a'
+		temp := t.children
+		t.children = [26]*Trie{}
+		t.children[idx] = &Trie{
+			isEnd:    t.isEnd,
+			shared:   t.shared[i:],
+			children: temp,
+		}
+		t.shared = t.shared[:i]
+		t.isEnd = i == len(word)
+	}
+
+	if i < len(word) {
+		idx := word[i] - 'a'
+		if t.children[idx] == nil {
+			t.children[idx] = &Trie{
+				isEnd:  true,
+				shared: word[i:],
+			}
+		} else {
+			t.children[idx].Insert(word[i:])
+		}
+	}
 }
 
-func (this *Trie) Search(word string) bool {
-	cur := this
-	_ = word[len(word)-1]
-	for i = 0; i < len(word); i++ {
-		index = word[i] - 'a'
-		if cur.links[index] == nil {
+func (t *Trie) Search(word string) bool {
+	if len(t.shared) > len(word) {
+		return false
+	}
+	if t.shared == word[:len(t.shared)] {
+		if len(t.shared) == len(word) {
+			return t.isEnd
+		}
+		if t.children[word[len(t.shared)]-'a'] == nil {
 			return false
 		}
-		cur = cur.links[index]
+		return t.children[word[len(t.shared)]-'a'].Search(word[len(t.shared):])
+	} else {
+		return false
 	}
-	return cur.end
 }
 
-func (this *Trie) StartsWith(prefix string) bool {
-	cur := this
-	_ = prefix[len(prefix)-1]
-	for i = 0; i < len(prefix); i++ {
-		index = prefix[i] - 'a'
-		if cur.links[index] == nil {
+func (t *Trie) StartsWith(prefix string) bool {
+	i := 0
+	for ; i < len(prefix) && i < len(t.shared) && prefix[i] == t.shared[i]; i++ {
+	}
+	if i == len(prefix) {
+		return true
+	}
+	if i == len(t.shared) {
+		idx := prefix[i] - 'a'
+		if t.children[idx] == nil {
 			return false
 		}
-		cur = cur.links[index]
+		return t.children[idx].StartsWith(prefix[i:])
 	}
-	return true
+	return false
 }
