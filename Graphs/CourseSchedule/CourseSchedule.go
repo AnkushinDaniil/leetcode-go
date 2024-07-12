@@ -1,31 +1,34 @@
 package courseSchedule
 
-func canFinish(numCourses int, prerequisites [][]int) bool {
-	table := make([][]int, numCourses)
+func canFinish(numCourses int, pre [][]int) bool {
+	preMap := make([][]int, numCourses)
 	visited := make([]bool, numCourses)
-	res := true
 
-	var dfs func(int)
-	dfs = func(i int) {
-		for len(table[i]) > 0 {
-			if visited[table[i][0]] {
-				res = false
-				return
+	for i := range pre {
+		preMap[pre[i][0]] = append(preMap[pre[i][0]], pre[i][1])
+	}
+
+	var dfs func(int) bool
+	dfs = func(i int) bool {
+		for len(preMap[i]) > 0 {
+			if visited[preMap[i][0]] == true {
+				return false
 			}
-			visited[table[i][0]] = true
-			dfs(table[i][0])
-			visited[table[i][0]] = false
-			table[i] = table[i][1:]
+			visited[preMap[i][0]] = true
+			if !dfs(preMap[i][0]) {
+				return false
+			}
+			visited[preMap[i][0]] = false
+			preMap[i] = preMap[i][1:]
+		}
+		return true
+	}
+
+	for i := range numCourses {
+		if !dfs(i) {
+			return false
 		}
 	}
 
-	for i := 0; i < len(prerequisites); i++ {
-		table[prerequisites[i][0]] = append(table[prerequisites[i][0]], prerequisites[i][1])
-	}
-
-	for i := 0; i < numCourses && res; i++ {
-		dfs(i)
-	}
-
-	return res
+	return true
 }
