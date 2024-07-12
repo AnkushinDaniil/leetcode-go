@@ -3,28 +3,25 @@ package evaluateReversePolishNotation
 import "strconv"
 
 func evalRPN(tokens []string) int {
-	n := -1
-	stack := make([]int, len(tokens))
-
-	for _, token := range tokens {
-		switch token {
+	stack := make([]int, 0, len(tokens))
+	for i := range tokens {
+		switch tokens[i] {
 		case "+":
-			stack[n-1] = stack[n-1] + stack[n]
-			n--
+			stack[len(stack)-2] += stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
 		case "-":
-			stack[n-1] = stack[n-1] - stack[n]
-			n--
+			stack[len(stack)-2] -= stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
 		case "*":
-			stack[n-1] = stack[n-1] * stack[n]
-			n--
+			stack[len(stack)-2] *= stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
 		case "/":
-			stack[n-1] = stack[n-1] / stack[n]
-			n--
+			stack[len(stack)-2] /= stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
 		default:
-			n++
-			stack[n], _ = strconv.Atoi(token)
+			res, _ := strconv.Atoi(tokens[i])
+			stack = append(stack, res)
 		}
 	}
-
-	return stack[n]
+	return stack[0]
 }
