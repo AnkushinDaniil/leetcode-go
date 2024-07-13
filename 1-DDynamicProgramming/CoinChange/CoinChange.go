@@ -1,20 +1,21 @@
 package coinChange
 
+var mem [10001]int
+
 func coinChange(coins []int, amount int) int {
 	n := amount + 1
-	memo := make([]int, n)
-	for i := 1; i < n; i++ {
-		memo[i] = n
+
+	for i := range mem[1:n] {
+		mem[i+1] = amount + 1
 	}
 
-	for i := 0; i < len(coins); i++ {
-		for j := coins[i]; j < n; j++ {
-			memo[j] = min(memo[j], memo[j-coins[i]]+1)
+	for _, coin := range coins {
+		for j := coin; j < n; j++ {
+			mem[j] = min(mem[j], mem[j-coin]+1)
 		}
 	}
-	if memo[amount] == amount+1 {
+	if mem[amount] == n {
 		return -1
 	}
-
-	return memo[amount]
+	return mem[amount]
 }
