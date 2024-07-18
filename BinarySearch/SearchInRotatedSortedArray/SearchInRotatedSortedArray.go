@@ -1,64 +1,33 @@
 package searchInRotatedSortedArray
 
 func search(nums []int, target int) int {
-	l, r := 0, len(nums)-1
+	l, r, m := 0, len(nums)-1, 0
+	var compare func(int, int) bool
+	var update func()
+
 	if target >= nums[0] {
-		for l <= r {
-			m := (l + r) / 2
-			if nums[m] == target {
-				return m
-			}
-			if nums[m] >= nums[0] {
-				if target > nums[m] {
-					l = m + 1
-				} else {
-					r = m - 1
-				}
-			} else {
-				r = m - 1
-			}
-		}
+		compare = func(a, b int) bool { return a >= b }
+		update = func() { r = m - 1 }
 	} else {
-		for l <= r {
-			m := (l + r) / 2
-			if nums[m] == target {
-				return m
-			}
-			if !(nums[m] >= nums[0]) {
-				if target > nums[m] {
-					l = m + 1
-				} else {
-					r = m - 1
-				}
-			} else {
-				l = m + 1
-			}
-		}
+		compare = func(a, b int) bool { return a < b }
+		update = func() { l = m + 1 }
 	}
 
-	return -1
-}
-
-func search_(nums []int, target int) int {
-	l, r := 0, len(nums)-1
-	isTargetOnTheLeft := target >= nums[0]
-
 	for l <= r {
-		m := (l + r) / 2
+		m = (l + r) / 2
 		if nums[m] == target {
 			return m
 		}
-		if isTargetOnTheLeft == (nums[m] >= nums[0]) {
+		if compare(nums[m], nums[0]) {
 			if target > nums[m] {
 				l = m + 1
 			} else {
 				r = m - 1
 			}
-		} else if isTargetOnTheLeft {
-			r = m - 1
 		} else {
-			l = m + 1
+			update()
 		}
 	}
+
 	return -1
 }
