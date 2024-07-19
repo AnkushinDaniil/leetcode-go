@@ -35,6 +35,13 @@ func Test(t *testing.T) {
 			q:      CreateTreeFromArray([]interface{}{1}),
 			output: CreateTreeFromArray([]interface{}{2}),
 		},
+		{
+			name:   "Example 3",
+			root:   CreateTreeFromArray([]interface{}{3, 5, 1, 6, 2, 0, 8, nil, nil, 7, 4}),
+			p:      CreateTreeFromArray([]interface{}{5}),
+			q:      CreateTreeFromArray([]interface{}{4}),
+			output: CreateTreeFromArray([]interface{}{2}),
+		},
 	}
 
 	for _, testCase := range testTable {
