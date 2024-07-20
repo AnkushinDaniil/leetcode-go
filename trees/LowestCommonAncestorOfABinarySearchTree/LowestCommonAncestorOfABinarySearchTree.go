@@ -16,13 +16,16 @@ func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
 		if tn == nil {
 			return false
 		}
+		t := false
 		if tn.Val == l || tn.Val == r {
-			return true
+			t = true
 		}
-		if dfs(tn.Right) && dfs(tn.Left) {
+		l := dfs(tn.Left)
+		r := dfs(tn.Right)
+		if (t && l) || (t && r) || (l && r) {
 			res = tn
 		}
-		return false
+		return t || l || r
 	}
 	dfs(root)
 	return res
