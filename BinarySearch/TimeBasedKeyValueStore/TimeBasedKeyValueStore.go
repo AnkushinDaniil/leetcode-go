@@ -1,48 +1,59 @@
 package timeBasedKeyValueStore
 
-type Value struct {
+type Node struct {
 	timestamp int
 	value     string
 }
 
-type TimeMap struct {
-	data map[string][]Value
+type Data []*Node
+
+func NewData(capacity int) *Data {
+	data := make(Data, 0, capacity)
+	return &data
 }
 
-func Constructor() TimeMap {
-	data := make(map[string][]Value, 0)
-	return TimeMap{
-		data: data,
-	}
+func (d *Data) Set(n *Node) {
+	*d = append(*d, n)
 }
 
-func (tm *TimeMap) Set(key string, value string, timestamp int) {
-	tm.data[key] = append(
-		tm.data[key],
-		Value{
-			timestamp: timestamp,
-			value:     value,
-		},
-	)
-}
-
-func (tm *TimeMap) Get(key string, timestamp int) string {
-	if _, ok := tm.data[key]; !ok || timestamp < tm.data[key][0].timestamp {
+func (d Data) Get(t int) string {
+	if t < d[0].timestamp {
 		return ""
 	}
-
-	l, r := 0, len(tm.data[key])-1
-
+	l, r := 0, len(d)-1
 	for l <= r {
 		m := (l + r) / 2
-		if tm.data[key][m].timestamp > timestamp {
-			r = m - 1
-		} else if tm.data[key][m].timestamp < timestamp {
+		if t == d[m].timestamp {
+			return d[m].value
+		}
+		if t > d[m].timestamp {
 			l = m + 1
 		} else {
-			return tm.data[key][l].value
+			r = m - 1
 		}
 	}
+	return d[l-1].value
+}
 
-	return tm.data[key][l-1].value
+type TimeMap map[string]*Data
+
+func Constructor() TimeMap {
+	return make(TimeMap, 4)
+}
+
+func (t *TimeMap) Set(key string, value string, timestamp int) {
+	if _, ok := (*t)[key]; !ok {
+		(*t)[key] = NewData(1)
+	}
+	(*t)[key].Set(&Node{
+		timestamp: timestamp,
+		value:     value,
+	})
+}
+
+func (t *TimeMap) Get(key string, timestamp int) string {
+	if data, ok := (*t)[key]; ok {
+		return data.Get(timestamp)
+	}
+	return ""
 }
