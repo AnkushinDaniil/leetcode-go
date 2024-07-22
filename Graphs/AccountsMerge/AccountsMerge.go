@@ -27,6 +27,7 @@ func (uf *UnionFind) Find(x int) int {
 
 func (uf *UnionFind) Union(x1, x2 int) bool {
 	p1, p2 = uf.Find(x1), uf.Find(x2)
+
 	if p1 == p2 {
 		return false
 	}
