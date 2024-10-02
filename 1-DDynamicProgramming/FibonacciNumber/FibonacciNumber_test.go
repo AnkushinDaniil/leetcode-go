@@ -22,3 +22,15 @@ func TestFib(t *testing.T) {
     })
   }
 }
+
+func BenchmarkFibN(  b *testing.B,) {
+  for i := 0; i < b.N; i++ {
+    fibN(1000)
+  }
+}
+
+func BenchmarkFibLogN(  b *testing.B,) {
+  for i := 0; i < b.N; i++ {
+    fib(1000)
+  }
+}

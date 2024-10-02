@@ -15,12 +15,14 @@ func fibN(n int) int {
 
 type mat [2][2]int
 
-var q = mat{
-	{1, 1},
-	{1, 0},
-}
-
 func fib(n int) int {
+	q := mat{
+		{1, 1},
+		{1, 0},
+	}
+	if n == 0 {
+		return 0
+	}
 	return povMat(q, n-1)[0][0]
 }
 
