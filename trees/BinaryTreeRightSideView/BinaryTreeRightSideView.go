@@ -6,21 +6,22 @@ type TreeNode = trees.TreeNode
 
 func rightSideView(root *TreeNode) []int {
 	res := make([]int, 0)
+	level := 0
 
-	var rec func(*TreeNode, int)
-	rec = func(tn *TreeNode, level int) {
-		if tn == nil {
+	var dfs func(*TreeNode)
+	dfs = func(r *TreeNode) {
+		if r == nil {
 			return
 		}
-		if len(res) < level+1 {
-			res = append(res, tn.Val)
+		if level == len(res) {
+			res = append(res, r.Val)
 		}
-
-		rec(tn.Right, level+1)
-		rec(tn.Left, level+1)
+		level++
+		dfs(r.Right)
+		dfs(r.Left)
+		level--
 	}
-
-	rec(root, 0)
+	dfs(root)
 
 	return res
 }
