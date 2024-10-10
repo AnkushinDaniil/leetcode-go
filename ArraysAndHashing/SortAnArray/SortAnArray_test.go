@@ -1,6 +1,7 @@
 package sortanarray
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -27,10 +28,17 @@ func TestSortArray(t *testing.T) {
 			input:    []int{1, 2, 3, 4, 5},
 			expected: []int{1, 2, 3, 4, 5},
 		},
+		{
+			name:     "Test case 4",
+			input:    []int{5, 1, 1, 2, 0, 0},
+			expected: []int{0, 0, 1, 1, 2, 5},
+		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			assert.Equal(t, test.expected, sortArray(test.input))
+			assert.Equal(t, test.expected, sortArray(slices.Clone(test.input)))
+			quickSort(test.input)
+			assert.Equal(t, test.expected, slices.Clone(test.input))
 		})
 	}
 }
